@@ -1,0 +1,10 @@
+
+[Default Applications]
+x-scheme-handler/notion=notion-app.desktop
+x-scheme-handler/postman=Postman.desktop
+text/html=firefox.desktop
+x-scheme-handler/http=firefox.desktop
+x-scheme-handler/https=firefox.desktop
+x-scheme-handler/about=firefox.desktop
+x-scheme-handler/unknown=firefox.desktop
+x-scheme-handler/eclipse+command=_usr_lib_dbeaver_.desktop

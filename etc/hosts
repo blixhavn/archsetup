@@ -1,0 +1,7 @@
+# Static table lookup for hostnames.
+# See hosts(5) for details.
+
+127.0.0.1 *.localhost
+
+192.168.0.198 magicmirror
+192.168.0.197 jukebox

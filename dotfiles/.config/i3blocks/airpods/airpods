@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Author: Akhil Jalagam
+
+# dependencies
+#   1.ofono.service
+#   2.ofono-phonesim
+#       sudo add-apt-repository ppa:smoser/bluetooth
+#       sudo apt-get install ofono-phonesim
+#   3.git clone https://github.com/rilmodem/ofono.git /opt/ofono
+
+## i3blocks.conf
+# [airpods]
+# command=/path/to/airpods
+# label=🎧 
+# interval=10
+
+# replace MAC and card name here first time
+AIRPODS_MAC='14:85:09:BE:9F:2C'
+AIRPODS_NAME='bluez_card.14_85_09_BE_9F_2C'
+
+case "$BLOCK_BUTTON" in
+    1)
+        bluetoothctl connect $AIRPODS_MAC > /dev/null
+        sudo systemctl start ofono
+        nohup ofono-phonesim -p 12345 /usr/share/phonesim/default.xml &> /tmp/ofono-phonesim.nohup &
+        /opt/ofono/test/enable-modem /phonesim 
+        #pactl set-card-profile $AIRPODS_NAME headset_head_unit
+    ;;
+    3)
+        /opt/ofono/test/disable-modem /phonesim
+        killall ofono-phonesim
+        sudo systemctl stop ofono
+        bluetoothctl disconnect $AIRPODS_MAC > /dev/null
+
+        #bluetooth off
+    ;;
+    2)
+        cur=`pactl list | grep -A 30 $AIRPODS_NAME | grep 'Active Profile:' | cut -d' ' -f3`
+        if [[ $cur == "a2dp_sink" ]]; then
+            pactl set-card-profile $AIRPODS_NAME headset_head_unit
+        else
+            pactl set-card-profile $AIRPODS_NAME a2dp_sink
+        fi
+    ;;
+esac
+
+card_no=`pactl list cards short | grep $AIRPODS_NAME | awk '{print $1}'`
+active_profile=`pactl list cards | sed -n -e "/Card #\$card_no/,/Card/ p" | grep 'Active Profile:' | awk '{print $3}'`
+
+if [ $active_profile = 'a2dp_sink' ]; then
+    profile_label=''
+else
+    profile_label=''
+fi
+
+if pactl list | grep $AIRPODS_NAME &>>/dev/null; then
+    echo "$profile_label"
+    echo "$profile_label"
+    echo "#ff7f50"
+else
+    echo ""
+    echo ""
+    echo "#a6a6a6"
+fi

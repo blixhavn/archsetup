@@ -1,0 +1,11 @@
+[Trigger]
+Operation=Upgrade
+Type=Package
+Target=intel-ucode
+
+[Action]
+Description=Copying Intel microcode update to EFI System Partition...
+When=PostTransaction
+Exec=/usr/bin/cp /boot/intel-ucode.img /efi/EFI/arch/
+Depends=coreutils
+

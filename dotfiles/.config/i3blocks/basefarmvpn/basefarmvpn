@@ -1,0 +1,26 @@
+#!/bin/bash
+
+vpnbin="/opt/cisco/anyconnect/bin/vpn"
+active_vpn=$($vpnbin state | grep -m 1 "state: Connected" | cut -d' ' -f5)
+
+function log_in() {
+  password=$(echo -en "" | rofi -dmenu -password -p "PASSWORD" -lines 0)
+  otp=$(echo -en "" | rofi -dmenu -password -p "OTP" -lines 0)
+
+  printf "ylixhavn\n$password\n$otp\ny" | $vpnbin -s connect rem.vpn.basefarm.com > /dev/null
+}
+
+case $BLOCK_BUTTON in
+    1) log_in;;
+    2|3) $vpnbin disconnect > /dev/null;;
+esac
+
+
+if [ ! -z $active_vpn ]; then
+    echo "<span color='coral'></span>"
+    echo "<span color='coral'></span>"
+else
+    echo "<span color='grey'></span>"
+    echo "<span color='grey'></span>"
+fi
+

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Copyright (C) 2020 Pavel Makhov <streetturtle@gmail.com>
+
+
+case $BLOCK_BUTTON in
+    1) spt pb --toggle  > /dev/null ;; # left click
+#    4) sp next ;; # scroll up
+#    5) sp prev ;; # scroll down
+esac
+
+if spt pb -f %s | grep '⏸' > /dev/null; then
+	st='<span color=\"coral\"><\/span>' # fa-pause
+elif spt pb -f %s | grep '▶' > /dev/null; then
+	st='<span color=\"coral\"><\/span>' # fa-play
+else
+    echo ""
+    die
+fi
+spt pb -s -f "%a $st %t"
+

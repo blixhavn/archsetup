@@ -1,0 +1,8 @@
+#!/bin/bash
+
+active_card=$(pacmd list-sinks | sed -n "/*\sindex/,/properties/p" | gawk 'match($0,/card:\s[0-9]+\s<(.*)>/, ary) {print ary['${2:-'1'}']}';)
+active_card_index=$(pacmd list-sinks | sed -n "/*\sindex/,/properties/p" | gawk 'match($0,/card:\s([0-9])+\s</, ary) {print ary['${2:-'1'}']}';)
+profiles_for_active_card=$(pacmd list-cards | sed -n "/index: $active_card_index/,/active profile:/p" | sed -n "/profiles:/,/active profile:/p" | sed -e '/profiles:/d' -e '/active profile:/d' | sed -e "s/^[ \t]*//" | cut -f1 -d' ' | sed "s/:$//")
+nof_profiles=$(echo $profiles_for_active_card | wc -l)
+
+echo $profiles_for_active_card | rofi -p "Select sound card profile" -dmenu -lines $(($nof_profiles>10 ? 10 : $nof_profiles)) | xargs pacmd set-card-profile $active_card $1

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# if capslock is not activated
+if [[ `xset q | grep -P 'Caps Lock:\s+?on'` == "" ]]; then
+    # disable capslock
+    ((/usr/bin/setxkbmap -option 'ctrl:nocaps') 2>&1) > /dev/null
+fi

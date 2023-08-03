@@ -1,0 +1,5 @@
+[kubernetes]
+format = '[$symbol$context( \($namespace\))]($style) '
+symbol = '  '
+style = 'blue'
+disabled = false

@@ -1,0 +1,15 @@
+
+# Arch Linux repository mirrorlist
+# Generated on 2023-01-03
+#
+
+# Norway
+Server = http://mirror.archlinux.no/$repo/os/$arch
+Server = https://mirror.archlinux.no/$repo/os/$arch
+Server = http://archlinux.uib.no/$repo/os/$arch
+Server = http://lysakermoen.com/Software/Linux/Mirrors/ArchLinux/$repo/os/$arch
+Server = https://lysakermoen.com/Software/Linux/Mirrors/ArchLinux/$repo/os/$arch
+Server = http://mirror.neuf.no/archlinux/$repo/os/$arch
+Server = https://mirror.neuf.no/archlinux/$repo/os/$arch
+Server = http://mirror.terrahost.no/linux/archlinux/$repo/os/$arch
+

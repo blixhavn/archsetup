@@ -1,0 +1,16 @@
+{
+    "player": "spotify",
+    "format": "{artist} <span color=\"coral\">{status:icon}<\/span> {title}",
+    "markup_escape": true,
+    "status_icons": {
+        "Playing": "",
+        "Paused": "",
+        "Stopped": ""
+    },
+    "mouse_buttons": {
+        "1": "PlayPause",
+        "9": "Previous",
+        "8": "Next"
+    }
+}
+

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+active_vpn=$(nmcli con show --active | grep vpn | cut -d' ' -f1)
+
+case $BLOCK_BUTTON in
+	1) nmcli con | 
+        { grep vpn; echo "Off"; } |
+        cut -d' ' -f1 | 
+        rofi -dmenu -p "Select VPN" -location 3 -yoffset 24 -font "Ubuntu Mono 10" -lines $(expr 1 + $(nmcli con | grep vpn | wc -l)) |
+        xargs -I'{}' sh -c ' 
+            case $1 in
+                "Off")
+                    nmcli con down $2
+                    ;;
+                *)
+                    nmcli con up id $1
+                    ;;
+            esac' sh '{}' $active_vpn
+        ;;
+	2|3) nmcli con down id $active_vpn ;;
+esac
+
+if [ ! -z $active_vpn ]; then
+    echo "<span color='coral'></span> $active_vpn"
+    echo "<span color='coral'></span> $active_vpn"
+else
+    echo "<span color='grey'></span>"
+    echo "<span color='grey'></span>"
+fi
+

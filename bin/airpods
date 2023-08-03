@@ -1,0 +1,1 @@
+exec bluetoothctl connect 00:7D:60:E8:F0:53

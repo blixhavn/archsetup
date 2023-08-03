@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = linux
+
+[Action]
+Description = Copying vmlinuz-linux and initramfs-linux to ESP...
+When = PostTransaction
+Exec = /usr/bin/cp /boot/vmlinuz-linux /boot/initramfs-linux.img /boot/initramfs-linux-fallback.img /efi/EFI/arch/
+Depends = coreutils
+

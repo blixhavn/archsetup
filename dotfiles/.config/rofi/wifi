@@ -1,0 +1,13 @@
+NMCLI_ROFI_SOURCE=$HOME/.config/rofi/wifi
+
+POSITION=3
+
+YOFF=24
+
+XOFF=0
+
+RWIDTH=300
+
+MAGIC=-5
+
+FONT="DejaVu Sans Mono Bold 12"
