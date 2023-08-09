@@ -12,6 +12,9 @@ colorEcho(){
     echo -e "${COLOR}$2${NC}"
 }
 
+# Determine script directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 colorEcho ${CYAN} "
    _____                .__    .___       .__  __   
   /  _  \\_______   ____ |  |__ |   | ____ |__|/  |_ 
@@ -23,10 +26,11 @@ colorEcho ${CYAN} "
 
 colorEcho ${GREEN} "Starting..."
 
+
 # Adding Pacman hooks
 colorEcho ${GREEN} "Adding Pacman hooks..."
 sudo mkdir -p /etc/pacman.d/hooks
-sudo cp ./pacman-hooks/* /etc/pacman.d/hooks/
+sudo cp $DIR/pacman-hooks/* /etc/pacman.d/hooks/
 
 # Update pacman
 colorEcho ${GREEN} "Updating pacman..."
@@ -42,24 +46,31 @@ git clone https://aur.archlinux.org/paru.git
 cd paru
 makepkg -si
 cd ..
+rm -rf paru
 
 # Use paru to install packages in pkglist.txt
 colorEcho ${GREEN} "Installing packages..."
-paru -S --needed - < pkglist.txt
+paru -S --needed - < $DIR/pkglist.txt
 
-# Copy etc files
 colorEcho ${GREEN} "Copying etc files..."
-cp -R etc/* /etc/
+cp -R $DIR/etc/* /etc/
+
+colorEcho ${GREEN} "Copying usr/share files..."
+cp -R $DIR/usrshare/* /usr/share/
 
 # Copy dotfiles
 colorEcho ${GREEN} "Copying dotfiles..."
-cp -R dotfiles/* ~
+find $DIR/dotfiles -mindepth 1 -name '.*' -exec cp -r {} ~ \;
 
 # Call dotfiles/install.sh
 colorEcho ${GREEN} "Running dotfiles/install.sh..."
-./dotfiles/install.sh
+bash $DIR/dotfiles/install.sh
 
 colorEcho ${GREEN} "Dotfiles install complete!"
+
+colorEcho ${GREEN} "Copying fonts..."
+mkdir -p ~/.local/share/fonts
+cp -r $DIR/fonts/* ~/.local/share/fonts/
 
 # Install and enable services
 colorEcho ${GREEN} "Installing services..."
@@ -75,6 +86,7 @@ for service in services/*; do
     colorEcho ${CYAN} "Starting $service_name.service"
     sudo systemctl start $service_name.service
 done
+sudo systemctl enable lightdm
 
 # Call custom scripts
 for script in ./scripts/*; do

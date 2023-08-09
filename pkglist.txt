@@ -9,6 +9,7 @@ brillo
 btop
 calc
 caprine
+code
 cups
 dbeaver
 direnv
@@ -34,6 +35,7 @@ kubectl
 kind
 lightdm
 lightdm-webkit2-greeter
+lightdm-webkit-theme-aether
 neofetch
 net-tools
 network-manager-applet
