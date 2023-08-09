@@ -23,10 +23,6 @@ colorEcho ${CYAN} "
 
 colorEcho ${GREEN} "Starting..."
 
-# Copy homedir content to home
-colorEcho ${GREEN} "Copying home directory content..."
-cp -R homedir/ ~
-
 # Adding Pacman hooks
 colorEcho ${GREEN} "Adding Pacman hooks..."
 sudo mkdir -p /etc/pacman.d/hooks
@@ -67,7 +63,7 @@ colorEcho ${GREEN} "Dotfiles install complete!"
 
 # Install and enable services
 colorEcho ${GREEN} "Installing services..."
-cp services/* /etc/systemd/system/
+sudo cp services/* /etc/systemd/system/
 for service in services/*; do
     # Extract the service name from the file path
     service_name=$(basename -- "$service")

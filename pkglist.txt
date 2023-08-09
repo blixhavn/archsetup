@@ -32,6 +32,8 @@ k9s
 kernel-alive
 kubectl
 kind
+lightdm
+lightdm-webkit2-greeter
 neofetch
 net-tools
 network-manager-applet
