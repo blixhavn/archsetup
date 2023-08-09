@@ -15,6 +15,21 @@ colorEcho(){
 # Determine script directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+SKIP_PACKAGES=false
+
+for arg in "$@"; do
+    case $arg in
+        --skip-packages)
+            SKIP_PACKAGES=true
+            shift # Remove --skip-packages from processing
+            ;;
+        *)
+            # Handle other arguments if necessary
+            shift 
+            ;;
+    esac
+done
+
 colorEcho ${CYAN} "
    _____                .__    .___       .__  __   
   /  _  \\_______   ____ |  |__ |   | ____ |__|/  |_ 
@@ -32,25 +47,30 @@ colorEcho ${GREEN} "Adding Pacman hooks..."
 sudo mkdir -p /etc/pacman.d/hooks
 sudo cp $DIR/pacman-hooks/* /etc/pacman.d/hooks/
 
-# Update pacman
-colorEcho ${GREEN} "Updating pacman..."
-sudo pacman -Syu
+if [ "$SKIP_PACKAGES" = false ]; then
+    # Update pacman
+    colorEcho ${GREEN} "Updating pacman..."
+    sudo pacman -Syu
 
-# Install latest arch keychain
-colorEcho ${GREEN} "Installing latest Arch keychain..."
-sudo pacman -S archlinux-keyring
+    # Install latest arch keychain
+    colorEcho ${GREEN} "Installing latest Arch keychain..."
+    sudo pacman -S archlinux-keyring
 
-# Install paru
-colorEcho ${GREEN} "Installing paru..."
-git clone https://aur.archlinux.org/paru.git
-cd paru
-makepkg -si
-cd ..
-rm -rf paru
+    # Install paru
+    colorEcho ${GREEN} "Installing paru..."
+    git clone https://aur.archlinux.org/paru.git
+    cd paru
+    makepkg -si
+    cd ..
+    rm -rf paru
 
-# Use paru to install packages in pkglist.txt
-colorEcho ${GREEN} "Installing packages..."
-paru -S --needed - < $DIR/pkglist.txt
+    # Use paru to install packages in pkglist.txt
+    colorEcho ${GREEN} "Installing packages..."
+    paru -S --needed - < $DIR/pkglist.txt
+else
+    colorEcho ${GREEN} "Skipping package installation..."
+fi
+
 
 colorEcho ${GREEN} "Copying etc files..."
 cp -R $DIR/etc/* /etc/
