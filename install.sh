@@ -16,11 +16,17 @@ colorEcho(){
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 SKIP_PACKAGES=false
+SKIP_SERVICES=false
 
 for arg in "$@"; do
     case $arg in
         --skip-packages)
             SKIP_PACKAGES=true
+            shift # Remove --skip-packages from processing
+            ;;
+
+        --skip-services)
+            SKIP_SERVICES=true
             shift # Remove --skip-packages from processing
             ;;
         *)
@@ -73,10 +79,10 @@ fi
 
 
 colorEcho ${GREEN} "Copying etc files..."
-cp -R $DIR/etc/* /etc/
+sudo cp -R $DIR/etc/* /etc/
 
 colorEcho ${GREEN} "Copying usr/share files..."
-cp -R $DIR/usrshare/* /usr/share/
+sudo cp -R $DIR/usrshare/* /usr/share/
 
 # Copy dotfiles
 colorEcho ${GREEN} "Copying dotfiles..."
@@ -93,20 +99,25 @@ mkdir -p ~/.local/share/fonts
 cp -r $DIR/fonts/* ~/.local/share/fonts/
 
 # Install and enable services
-colorEcho ${GREEN} "Installing services..."
-sudo cp services/* /etc/systemd/system/
-for service in services/*; do
-    # Extract the service name from the file path
-    service_name=$(basename -- "$service")
-    service_name="${service_name%.*}"
-    
-    colorEcho ${CYAN} "Enabling $service_name.service"
-    sudo systemctl enable $service_name.service
-    
-    colorEcho ${CYAN} "Starting $service_name.service"
-    sudo systemctl start $service_name.service
-done
-sudo systemctl enable lightdm
+
+if [ "$SKIP_PACKAGES" = false ]; then
+    colorEcho ${GREEN} "Installing services..."
+    sudo cp services/* /etc/systemd/system/
+    for service in services/*; do
+        # Extract the service name from the file path
+        service_name=$(basename -- "$service")
+        service_name="${service_name%.*}"
+        
+        colorEcho ${CYAN} "Enabling $service_name.service"
+        sudo systemctl enable $service_name.service
+        
+        colorEcho ${CYAN} "Starting $service_name.service"
+        sudo systemctl start $service_name.service
+    done
+    sudo systemctl enable lightdm
+else
+    colorEcho ${GREEN} "Skipping systemd services..."
+fi
 
 # Call custom scripts
 for script in ./scripts/*; do
